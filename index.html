@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arunachal University of Studies - Official Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-dark: #004d40;
+            --accent-yellow: #ffeb3b;
+            --accent-red: #f44336;
+            --bg-light: #f4f4f4;
+            --text-dark: #333;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* 1. TOP INFO BAR */
+        .top-bar {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 8px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            border-bottom: 3px solid #ffb300;
+        }
+
+        .helpline b { color: var(--accent-yellow); }
+
+        .social-icons i {
+            margin-right: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .social-icons i:hover { color: var(--accent-yellow); }
+
+        /* --- LOGIN BUTTON (AS PER SCREENSHOT 214) --- */
+        .login-container {
+            position: relative;
+        }
+
+        .login-trigger {
+            background-color: #f1f1f1;
+            color: #444;
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            border: 1px solid #ccc;
+            font-size: 13px;
+        }
+
+        .login-trigger i.fa-user {
+            color: var(--primary-dark);
+        }
+
+        .login-dropdown {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: white;
+            min-width: 180px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1001;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .login-dropdown a {
+            display: block;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .login-dropdown a:hover {
+            background-color: #f9f9f9;
+            color: var(--primary-dark);
+        }
+
+        /* 2. MAIN HEADER */
+        header {
+            background: white;
+            padding: 12px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            height: 70px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #222;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover { color: var(--primary-dark); }
+
+        .apply-now {
+            background-color: var(--accent-red);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        /* 3. HERO SECTION (BANNER) */
+        .hero {
+            height: 500px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('https://i.ibb.co/KTK5f5Y/convocation.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 { font-size: 42px; text-shadow: 2px 2px 8px rgba(0,0,0,0.6); }
+
+        /* 4. QUICK LINKS (SCREENSHOT 213) */
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            padding: 50px 10%;
+            gap: 30px;
+            background: white;
+            text-align: center;
+        }
+
+        .link-item i {
+            font-size: 40px;
+            color: #00796b;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        .link-item:hover i {
+            background-color: #00796b;
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .link-item p { font-weight: 600; color: #555; font-size: 14px; }
+
+        /* 5. APPROVALS SECTION */
+        .approvals {
+            padding: 60px 6%;
+            background-color: var(--bg-light);
+            text-align: center;
+        }
+
+        .approvals h2 { margin-bottom: 40px; font-weight: 800; color: #333; }
+
+        .approval-flex {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .approval-card {
+            background: white;
+            padding: 20px;
+            width: 180px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .approval-card img {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        /* 6. FOOTER */
+        footer {
+            background-color: #1a1a1a;
+            color: #bbb;
+            padding: 60px 6% 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-left: 4px solid var(--primary-dark);
+            padding-left: 10px;
+        }
+
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; }
+        .footer-col ul li a:hover { color: white; }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            font-size: 12px;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            nav { display: none; } /* Simplified for mobile */
+            .top-bar { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="social-icons">
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-instagram"></i>
+        </div>
+        <div class="helpline">ADMISSION HELPLINE : <b>8731944477 / 8131848860</b></div>
+        
+        <div class="login-container">
+            <div class="login-trigger" onclick="toggleLogin()">
+                <i class="fas fa-user"></i>
+                Login
+                <i class="fas fa-caret-down"></i>
+            </div>
+            <div class="login-dropdown" id="loginDropdown">
+                <a href="login.html"><i class="fas fa-user-graduate"></i> Student Login</a>
+                <a href="#"><i class="fas fa-chalkboard-teacher"></i> Faculty Login</a>
+                <a href="#"><i class="fas fa-user-cog"></i> Admin Portal</a>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <img src="https://i.ibb.co/RT815vfq/logo.webp" alt="AUS Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Programmes</a></li>
+                <li><a href="#">Academics</a></li>
+                <li><a href="#">Research</a></li>
+                <li><a href="#" class="apply-now">Apply Online</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div>
+            <h1>EXPERIENCE LIFE AT AUS</h1>
+            <p>Empowering Students with Quality Education</p>
+        </div>
+    </section>
+
+    <section class="quick-links">
+        <div class="link-item"><i class="fas fa-edit"></i><p>Apply Online</p></div>
+        <div class="link-item"><i class="fas fa-graduation-cap"></i><p>Our Courses</p></div>
+        <div class="link-item"><i class="fas fa-file-alt"></i><p>Prospectus</p></div>
+        <div class="link-item"><i class="fas fa-university"></i><p>Infrastructure</p></div>
+        <div class="link-item"><i class="fas fa-trophy"></i><p>Scholarship</p></div>
+        <div class="link-item"><i class="fas fa-phone-alt"></i><p>Contact Us</p></div>
+    </section>
+
+    <section class="approvals">
+        <h2>APPROVALS & RECOGNITION</h2>
+        <div class="approval-flex">
+            <div class="approval-card">
+                <img src="https://i.ibb.co/S73JYbz1/download-4.jpg" alt="UGC">
+                <p>UGC</p>
+            </div>
+            <div class="approval-card">
+                <img src="https://i.ibb.co/h1Z0mjqz/images-4.jpg" alt="NAAC">
+                <p>NAAC</p>
+            </div>
+            <div class="approval-card">
+                <img src="https://i.ibb.co/LDzKxLH3/images-5.jpg" alt="ICAR">
+                <p>ICAR</p>
+            </div>
+            <div class="approval-card">
+                <img src="https://i.ibb.co/S73JYbz1/download-4.jpg" alt="NCTE">
+                <p>NCTE</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Contact Info</h3>
+                <p>NH-52, Knowledge City, Namsai,</p>
+                <p>Arunachal Pradesh - 792103</p>
+                <p style="margin-top: 15px;">Email: info@arunachaluniversity.ac.in</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Academic Calendar</a></li>
+                    <li><a href="#">Examination Results</a></li>
+                    <li><a href="#">Online Fee Payment</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>University</h3>
+                <ul>
+                    <li><a href="#">About AUS</a></li>
+                    <li><a href="#">Vision & Mission</a></li>
+                    <li><a href="#">Career with us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Arunachal University of Studies. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Toggle Login Dropdown
+        function toggleLogin() {
+            var dropdown = document.getElementById("loginDropdown");
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        }
+
+        // Close dropdown if user clicks elsewhere
+        window.onclick = function(event) {
+            if (!event.target.closest('.login-container')) {
+                document.getElementById("loginDropdown").style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
