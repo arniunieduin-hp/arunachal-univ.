@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arunachal university - Student ERP Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #004d40;
+            --accent: #ffb300;
+            --bg-light: #f8f9fa;
+            --text-main: #333;
+            --white: #ffffff;
+            --sidebar-width: 280px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body { background-color: var(--bg-light); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .sidebar-brand img { width: 140px; margin-bottom: 10px; background: white; border-radius: 5px; padding: 5px; }
+
+        .nav-menu { list-style: none; padding: 15px 0; flex-grow: 1; overflow-y: auto; }
+
+        .nav-item {
+            padding: 14px 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--white);
+            color: var(--primary);
+            border-radius: 30px 0 0 30px;
+            margin-left: 10px;
+        }
+
+        .dropdown-btn { justify-content: space-between; }
+        .dropdown-container { display: none; background: rgba(0,0,0,0.15); padding-left: 20px; }
+        .dropdown-item { padding: 10px 20px; font-size: 13px; cursor: pointer; color: #ddd; display: block; text-decoration: none; }
+        .dropdown-item:hover { color: var(--accent); }
+
+        .logout-btn {
+            background: #d32f2f;
+            color: white !important;
+            margin: 20px;
+            border-radius: 5px;
+            justify-content: center;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+
+        header {
+            background: var(--white);
+            padding: 12px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+
+        .header-title { display: flex; align-items: center; gap: 15px; }
+        .header-title h2 { color: var(--primary); font-size: 18px; letter-spacing: 1px; }
+
+        .profile-chip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f3f4;
+            padding: 6px 18px;
+            border-radius: 50px;
+        }
+
+        .profile-chip img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .profile-info b { font-size: 13px; display: block; }
+        .profile-info small { font-size: 11px; color: #666; }
+
+        /* --- CONTENT SECTIONS (Based on Templates) --- */
+        .section-container { padding: 40px; display: none; }
+        .section-container.active { display: block; animation: fadeInUp 0.4s ease; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 1. ACADEMIC FORM (A4 White Style) */
+        .academic-form {
+            background: white;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 50px;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+
+        .form-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 30px; }
+        .form-header h1 { font-size: 24px; text-transform: uppercase; }
+
+        .student-photo-box {
+            position: absolute;
+            top: 130px;
+            right: 50px;
+            width: 130px;
+            height: 150px;
+            border: 1px solid #000;
+            padding: 3px;
+        }
+        .student-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .field-group { margin-bottom: 18px; display: flex; align-items: baseline; }
+        .field-label { width: 220px; font-weight: bold; color: #444; font-size: 14px; }
+        .field-dots { flex-grow: 1; border-bottom: 1px dotted #999; font-size: 15px; padding-bottom: 2px; }
+
+        /* 2. REGISTRATION FORM (Modern Blue/Green Style) */
+        .reg-card {
+            background: white;
+            border-top: 15px solid #004d40;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .reg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .reg-input-group { margin-bottom: 15px; }
+        .reg-input-group label { display: block; font-size: 12px; font-weight: 800; color: #004d40; margin-bottom: 5px; text-transform: uppercase; }
+        .reg-value { background: #f9f9f9; padding: 10px; border: 1px solid #eee; border-radius: 4px; font-weight: 600; }
+
+        /* 3. ID CARD (Horizontal Design) */
+        .id-wrapper { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+        .id-card-modern {
+            width: 480px;
+            height: 280px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .id-left-accent { width: 35%; background: var(--primary); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; }
+        .id-left-accent img.student-id-img { width: 110px; height: 130px; border: 3px solid white; border-radius: 10px; object-fit: cover; margin-bottom: 10px; }
+
+        .id-right-content { width: 65%; padding: 25px; position: relative; }
+        .id-right-content .uni-logo-small { width: 100px; margin-bottom: 10px; }
+        .id-detail-row { font-size: 13px; margin-bottom: 6px; }
+        .id-detail-row b { color: var(--primary); width: 80px; display: inline-block; }
+
+        /* 4. DOCUMENT REQUEST (Template style) */
+        .doc-req-form { background: #fffbe6; padding: 40px; border-radius: 10px; border: 2px dashed #bcbb7b; max-width: 800px; margin: 0 auto; }
+        .req-btn { background: #bcbb7b; border: none; padding: 15px 30px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #004d40, #00251a);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .login-box { background: white; padding: 40px; border-radius: 12px; width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+        .login-box img { width: 180px; margin-bottom: 30px; }
+        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; }
+        .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; font-weight: bold; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <img src="https://i.ibb.co/wxvDWyb/aus-naac-logo-1400w.webp" alt="AUS Logo">
+            <h3 style="margin-bottom: 20px; color: #555;">Student ERP Login</h3>
+            <input type="text" id="enrollInput" placeholder="Enrollment No">
+            <input type="password" id="passInput" placeholder="Password (DDMMYYYY)">
+            <button onclick="attemptLogin()">LOGIN TO DASHBOARD</button>
+            <p id="loginError" style="color: red; margin-top: 15px; font-size: 13px; display: none;">Invalid Credentials. Please try again.</p>
+        </div>
+    </div>
+
+    <div class="sidebar" id="app-sidebar" style="display: none;">
+        <div class="sidebar-brand">
+            <img src="https://i.ibb.co/wxvDWyb/aus-naac-logo-1400w.webp" alt="Logo">
+            <p style="font-size: 11px; letter-spacing: 1px; color: var(--accent);">UNIVERSITY ERP SYSTEM</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="showPage('academic', this)"><i class="fas fa-file-invoice"></i> Academic</li>
+            <li class="nav-item" onclick="showPage('registration', this)"><i class="fas fa-user-check"></i> Registration</li>
+            <li class="nav-item" onclick="showPage('idcard', this)"><i class="fas fa-address-card"></i> ID Card</li>
+            
+            <li class="nav-item dropdown-btn" onclick="toggleExam()">
+                <span><i class="fas fa-graduation-cap"></i> Examination</span>
+                <i class="fas fa-chevron-down"></i>
+            </li>
+            <div class="dropdown-container" id="examDrop">
+                <a href="#" class="dropdown-item" onclick="showPage('formstatus', this)">Form Status</a>
+                <a href="#" class="dropdown-item" onclick="showPage('results', this)">Examination Results</a>
+            </div>
+
+            <li class="nav-item" onclick="showPage('docrequest', this)"><i class="fas fa-file-export"></i> Document Request</li>
+            
+            <li class="nav-item logout-btn" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> LOGOUT</li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="app-content" style="display: none;">
+        <header>
+            <div class="header-title">
+                <h2>ARUNACHAL UNIVERSITY OF STUDIES</h2>
+            </div>
+            <div class="profile-chip">
+                <div class="profile-info" style="text-align: right;">
+                    <b id="user-name">Student Name</b>
+                    <small id="user-enroll">Enrollment No</small>
+                </div>
+                <img id="user-img" src="" alt="Student">
+            </div>
+        </header>
+
+        <div id="academic" class="section-container active">
+            <div class="academic-form">
+                <div class="student-photo-box"><img id="ac-img" src="" alt=""></div>
+                <div class="form-header">
+                    <h1>Student Enrollment Form</h1>
+                    <p>Academic Record - AUS Official</p>
+                </div>
+                <div class="field-group"><div class="field-label">Applying for Academic Year:</div><div class="field-dots" id="ac-session"></div></div>
+                <div class="field-group"><div class="field-label">Full Name:</div><div class="field-dots" id="ac-name"></div></div>
+                <div class="field-group"><div class="field-label">Date of Birth:</div><div class="field-dots" id="ac-dob"></div></div>
+                <div class="field-group"><div class="field-label">Father's Name:</div><div class="field-dots" id="ac-father"></div></div>
+                <div class="field-group"><div class="field-label">Gender:</div><div class="field-dots" id="ac-gender"></div></div>
+                <div class="field-group"><div class="field-label">Mobile Phone:</div><div class="field-dots" id="ac-mobile"></div></div>
+                <div class="field-group"><div class="field-label">Email Address:</div><div class="field-dots" id="ac-email"></div></div>
+                <div class="field-group"><div class="field-label">Full Address:</div><div class="field-dots" id="ac-address"></div></div>
+                
+                <h3 style="margin: 25px 0 15px;">Previous Educational Background</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: #eee;">
+                        <th style="border:1px solid #000; padding: 10px;">Exam</th>
+                        <th style="border:1px solid #000; padding: 10px;">Board</th>
+                        <th style="border:1px solid #000; padding: 10px;">Year</th>
+                        <th style="border:1px solid #000; padding: 10px;">%age</th>
+                    </tr>
+                    <tbody id="ac-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="registration" class="section-container">
+            <div class="reg-card">
+                <h2 style="color: #004d40; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Registration Form (Official)</h2>
+                <div class="reg-grid">
+                    <div class="reg-input-group"><label>Full Name</label><div class="reg-value" id="reg-name"></div></div>
+                    <div class="reg-input-group"><label>Date of Registration</label><div class="reg-value">12 / 08 / 2023</div></div>
+                    <div class="reg-input-group"><label>Enrollment Number</label><div class="reg-value" id="reg-enroll"></div></div>
+                    <div class="reg-input-group"><label>Course / Program</label><div class="reg-value" id="reg-course"></div></div>
+                    <div class="reg-input-group"><label>Nationality</label><div class="reg-value">INDIAN</div></div>
+                    <div class="reg-input-group"><label>Aadhar (Last 4)</label><div class="reg-value" id="reg-aadhar"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="idcard" class="section-container">
+            <div class="id-wrapper">
+                <div class="id-card-modern">
+                    <div class="id-left-accent">
+                        <img id="id-img" class="student-id-img" src="" alt="">
+                        <p style="font-size: 10px; opacity: 0.8;">STUDENT IDENTITY</p>
+                    </div>
+                    <div class="id-right-content">
+                        <img src="https://i.ibb.co/wxvDWyb/aus-naac-logo-1400w.webp" class="uni-logo-small">
+                        <h3 id="id-name-text" style="color: #ffb300; font-size: 16px; margin-bottom: 10px;">NAME</h3>
+                        <div class="id-detail-row"><b>ID NO</b>: <span id="id-enroll-text"></span></div>
+                        <div class="id-detail-row"><b>COURSE</b>: <span id="id-course-text"></span></div>
+                        <div class="id-detail-row"><b>SESSION</b>: <span id="id-session-text"></span></div>
+                        <div class="id-detail-row"><b>PHONE</b>: <span id="id-phone-text"></span></div>
+                        <div style="position: absolute; bottom: 15px; right: 15px; text-align: center;">
+                            <div style="width: 45px; height: 45px; background: #eee; font-size: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc;">QR CODE</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="color: #666; font-size: 13px;"><i class="fas fa-info-circle"></i> This is a printable Digital ID Card based on your ERP record.</p>
+            </div>
+        </div>
+
+        <div id="formstatus" class="section-container">
+            <div class="reg-card">
+                <h2>Examination Form Status</h2>
+                <div style="margin-top: 20px; padding: 20px; background: #e8f5e9; border-radius: 8px; border-left: 5px solid green;">
+                    <p><strong>Status:</strong> FORM SUBMITTED SUCCESSFULLY</p>
+                    <p><strong>Session:</strong> June - July 2024</p>
+                    <p><strong>Date:</strong> 15/05/2024</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="results" class="section-container">
+            <div class="reg-card" style="text-align: center; padding: 80px;">
+                <i class="fas fa-hourglass-half" style="font-size: 50px; color: var(--accent);"></i>
+                <h2 style="margin-top: 20px;">Result Waiting</h2>
+                <p>Result has not been declared yet for the 2023-25 session.</p>
+            </div>
+        </div>
+
+        <div id="docrequest" class="section-container">
+            <div class="doc-req-form">
+                <h2 style="text-align: center; color: #004d40; margin-bottom: 20px;">Document Request Form</h2>
+                <div class="reg-input-group">
+                    <label>Select Document Type</label>
+                    <select style="width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option>Marksheet (Duplicate)</option>
+                        <option>Migration Certificate</option>
+                        <option>Bonafide Certificate</option>
+                        <option>Transcript</option>
+                    </select>
+                </div>
+                <div class="reg-input-group" style="margin-top: 15px;">
+                    <label>Why is the document requested?</label>
+                    <input type="text" placeholder="Reason for request..." style="width: 100%; padding: 12px; border: 1px solid #ccc;">
+                </div>
+                <div class="reg-input-group" style="margin-top: 15px;">
+                    <label>Choice of Delivery</label>
+                    <div style="display: flex; gap: 20px; margin-top: 10px;">
+                        <label style="text-transform: none;"><input type="radio" name="del"> Pick up myself</label>
+                        <label style="text-transform: none;"><input type="radio" name="del"> E-mail</label>
+                        <label style="text-transform: none;"><input type="radio" name="del"> Postal Mail</label>
+                    </div>
+                </div>
+                <button class="req-btn" onclick="alert('Your document request has been sent for approval.')">SUBMIT REQUEST</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const students = {
+            "CSACE13371": {
+                pass: "03021999", name: "VINAY KUMAR RAY", father: "RAMBALI RAY", mother: "ANITA DEVI",
+                dob: "03/02/1999", gender: "MALE", aadhar: "8468", mobile: "+91 93152 88609",
+                email: "vinaykumar124090@gmail.com", course: "DELED", session: "2023-25",
+                photo: "https://i.ibb.co/TMMfqDZ8/vinay-images.png", address: "Nayagaon Bariyapur Taibpur Desri Vaishali Bihar 844506",
+                h10: { board: "BSEB", year: "2014", p: "53%" }, h12: { board: "BSEB", year: "2017", p: "55%" }
+            },
+            "CSACE13347": {
+                pass: "15072000", name: "RAMADHAR RAY", father: "PRABHANSH RAY", mother: "RAJ KUMARI DEVI",
+                dob: "15/07/2000", gender: "MALE", aadhar: "8695", mobile: "+91 9798192997",
+                email: "ramadhar201966@gmail.com", course: "DELED", session: "2023-25",
+                photo: "https://i.ibb.co/JFMHLdR1/Whats-App-Image-2026-03-11-at-11-45-59-PM.jpg", address: "Taibpur Desri Vaishali Bihar 844506",
+                h10: { board: "BSEB", year: "2015", p: "61%" }, h12: { board: "BSEB", year: "2018", p: "51%" }
+            }
+        };
+
+        function attemptLogin() {
+            const enroll = document.getElementById('enrollInput').value;
+            const pass = document.getElementById('passInput').value;
+            
+            if (students[enroll] && students[enroll].pass === pass) {
+                initDashboard(enroll);
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function initDashboard(id) {
+            const s = students[id];
+            
+            // Header & Global
+            document.getElementById('user-name').innerText = s.name;
+            document.getElementById('user-enroll').innerText = id;
+            document.getElementById('user-img').src = s.photo;
+
+            // Academic Form
+            document.getElementById('ac-img').src = s.photo;
+            document.getElementById('ac-name').innerText = s.name;
+            document.getElementById('ac-dob').innerText = s.dob;
+            document.getElementById('ac-father').innerText = s.father;
+            document.getElementById('ac-gender').innerText = s.gender;
+            document.getElementById('ac-mobile').innerText = s.mobile;
+            document.getElementById('ac-email').innerText = s.email;
+            document.getElementById('ac-address').innerText = s.address;
+            document.getElementById('ac-session').innerText = s.session;
+            document.getElementById('ac-table').innerHTML = `
+                <tr><td style="border:1px solid #000; padding:8px;">10th</td><td style="border:1px solid #000; padding:8px;">${s.h10.board}</td><td style="border:1px solid #000; padding:8px;">${s.h10.year}</td><td style="border:1px solid #000; padding:8px;">${s.h10.p}</td></tr>
+                <tr><td style="border:1px solid #000; padding:8px;">12th</td><td style="border:1px solid #000; padding:8px;">${s.h12.board}</td><td style="border:1px solid #000; padding:8px;">${s.h12.year}</td><td style="border:1px solid #000; padding:8px;">${s.h12.p}</td></tr>
+            `;
+
+            // Registration
+            document.getElementById('reg-name').innerText = s.name;
+            document.getElementById('reg-enroll').innerText = id;
+            document.getElementById('reg-course').innerText = s.course;
+            document.getElementById('reg-aadhar').innerText = s.aadhar;
+
+            // ID Card
+            document.getElementById('id-img').src = s.photo;
+            document.getElementById('id-name-text').innerText = s.name;
+            document.getElementById('id-enroll-text').innerText = id;
+            document.getElementById('id-course-text').innerText = s.course;
+            document.getElementById('id-session-text').innerText = s.session;
+            document.getElementById('id-phone-text').innerText = s.mobile;
+
+            // Show App
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-sidebar').style.display = 'flex';
+            document.getElementById('app-content').style.display = 'flex';
+        }
+
+        function showPage(pageId, el) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if(el.classList.contains('nav-item')) el.classList.add('active');
+        }
+
+        function toggleExam() {
+            const drop = document.getElementById('examDrop');
+            drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>
